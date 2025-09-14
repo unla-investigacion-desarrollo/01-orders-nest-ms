@@ -1,0 +1,22 @@
+services:
+  app-pedidos:
+    image: node:22.19-alpine
+    working_dir: /app
+    ports:
+      - "${HOST_PORT}:3000"
+      - "${HOST_DEBUG_PORT}:9229"  # Para debugging
+    volumes:
+      - ../../:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true  # Mejor que WATCHPACK_POLLING para Nest.js
+      - CHOKIDAR_INTERVAL=1000    # Intervalo de polling en ms
+    command: sh -c "npm install && npm run start:dev"
+    restart: unless-stopped
+    networks:
+      - pedidos-network
+
+networks:
+  pedidos-network:
+    driver: bridge
